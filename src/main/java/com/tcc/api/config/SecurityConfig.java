@@ -22,7 +22,9 @@ public class SecurityConfig {
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
             "/auth/login",
             "/auth/signup",
-            "/auth/validation-email-signup"
+            "/auth/validation-email-signup",
+            "/swagger-ui.html",
+            "/favicon.ico"
     };
     @Autowired
     private UserAuthenticationFilter userAuthenticationFilter;

@@ -1,14 +1,15 @@
-package com.tcc.api.config.auth.dto;
+package com.tcc.api.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+@RequiredArgsConstructor
 @Setter
 @Getter
-@RequiredArgsConstructor
-public class CreatedUserDTO {
-    private Long id;
+public class SignUpDTO {
     private String name;
     private String email;
+    private String password;
+    private String passwordConfirmation;
 }

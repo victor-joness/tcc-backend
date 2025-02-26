@@ -1,7 +1,7 @@
 package com.tcc.api.controllers;
 
-import com.tcc.api.config.auth.dto.MostLikedWordDTO;
-import com.tcc.api.config.auth.dto.SaveLikedWord;
+import com.tcc.api.dto.MostLikedWordDTO;
+import com.tcc.api.dto.SaveLikedWord;
 import com.tcc.api.models.LikedWord;
 import com.tcc.api.models.User;
 import com.tcc.api.models.Word;
@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +50,7 @@ public class LikedWordController {
 
 
 
-    @Operation(description = "Serviço para buscar curtidas do usuário")
+    @Operation(description = "Serviço para buscar detalhes de curtidas do usuário")
     @GetMapping("/user/{userId}")
     public List<LikedWord> getLikedWordsByUser(@PathVariable Long userId) {
         return likedWordRepository.findByUserId(userId);
@@ -64,7 +63,7 @@ public class LikedWordController {
         likedWordRepository.delete(likedWord);
     }
 
-    @Operation(description = "Serviço para buscar as palavras e suas respectivas quantidades de curtidas")
+    @Operation(description = "Serviço para buscar detalhes de as palavras e suas respectivas quantidades de curtidas")
     @GetMapping("/most-liked")
     public List<MostLikedWordDTO> getMostLikedWords() {
         List<Object[]> results = likedWordRepository.findMostLikedWords();

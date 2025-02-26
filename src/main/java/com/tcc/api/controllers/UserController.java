@@ -2,6 +2,8 @@ package com.tcc.api.controllers;
 
 import com.tcc.api.models.User;
 import com.tcc.api.repositories.UserRepo;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@Tag(name = "Usuários", description = "Serviços de usuários")
 public class UserController {
 
     @Autowired
@@ -18,22 +21,14 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @PostMapping
-    public User createUser(@RequestBody User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
-    }
 
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
+    @Operation(description = "Serviço para buscar detalhes de usuário")
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
         return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    @Operation(description = "Serviço para editar usuário")
     @PutMapping("/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
@@ -45,6 +40,7 @@ public class UserController {
         return userRepository.save(user);
     }
 
+    @Operation(description = "Serviço para apagar usuário")
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));

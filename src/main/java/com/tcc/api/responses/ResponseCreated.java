@@ -1,4 +1,4 @@
-package com.tcc.api.controllers.responses;
+package com.tcc.api.responses;
 
 import lombok.Getter;
 import lombok.Setter;

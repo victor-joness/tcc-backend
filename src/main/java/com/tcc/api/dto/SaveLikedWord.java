@@ -1,4 +1,4 @@
-package com.tcc.api.config.auth.dto;
+package com.tcc.api.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

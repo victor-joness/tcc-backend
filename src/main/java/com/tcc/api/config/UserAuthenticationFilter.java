@@ -76,6 +76,10 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
     private boolean checkIfEndpointIsNotPublic(HttpServletRequest request) {
 
         String requestURI = request.getRequestURI();
+        ///swagger-ui/index.html
+        if (requestURI.contains("swagger-ui") || requestURI.contains("api-docs")) {
+            return false;
+        }
         return !Arrays.asList(SecurityConfig.ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).contains(requestURI);
 
 

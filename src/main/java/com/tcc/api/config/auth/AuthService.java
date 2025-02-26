@@ -1,8 +1,9 @@
 package com.tcc.api.config.auth;
 
 
-import com.tcc.api.config.auth.dto.*;
+
 import com.tcc.api.config.mail.MailService;
+import com.tcc.api.dto.*;
 import com.tcc.api.enums.Role;
 import com.tcc.api.models.User;
 import com.tcc.api.repositories.UserRepo;
