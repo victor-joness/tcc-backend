@@ -5,6 +5,7 @@ import com.tcc.api.models.User;
 import com.tcc.api.repositories.CategoryRepo;
 import com.tcc.api.repositories.UserRepo;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +17,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/categories")
 @Tag(name = "Categorias", description = "Serviços de categorias de palavras")
+@SecurityRequirement(name = "bearer-key")
 public class CategoryController {
 
     @Autowired

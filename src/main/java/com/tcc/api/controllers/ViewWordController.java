@@ -8,6 +8,7 @@ import com.tcc.api.repositories.UserRepo;
 import com.tcc.api.repositories.ViewWordRepo;
 import com.tcc.api.repositories.WordRepo;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/view-words")
 @Tag(name = "Palavras visualizadas", description = "Serviços de palavras visualizadas")
+@SecurityRequirement(name = "bearer-key")
 public class ViewWordController {
 
     @Autowired
@@ -31,10 +33,10 @@ public class ViewWordController {
     private WordRepo wordRepo;
 
 
-    @Operation(description = "Serviço para listar palavras vistas de um usuário")
-    @GetMapping("/{id}")
-    public List<ViewWord> getByUserViewWords(@PathVariable Long id) {
-        return viewWordRepository.findByUserIdOrderByDateAsc(id);
+    @Operation(description = "Serviço para listar palavras vistas de um usuário", security = { @SecurityRequirement(name = "Authorization") })
+    @GetMapping("/{userId}")
+    public List<ViewWord> getByUserViewWords(@PathVariable Long userId) {
+        return viewWordRepository.findByUserIdOrderByDateAsc(userId);
     }
 
 

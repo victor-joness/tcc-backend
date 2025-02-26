@@ -4,6 +4,7 @@ import com.tcc.api.dto.SaveLawDTO;
 import com.tcc.api.models.Law;
 import com.tcc.api.repositories.LawRepo;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/laws")
 @Tag(name = "Leis", description = "Serviços de Leis")
+@SecurityRequirement(name = "bearer-key")
 public class LawController {
 
     @Autowired

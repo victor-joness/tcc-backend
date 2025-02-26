@@ -6,6 +6,7 @@ import com.tcc.api.models.Word;
 import com.tcc.api.repositories.CategoryRepo;
 import com.tcc.api.repositories.WordRepo;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/words")
 @Tag(name = "Palavras", description = "Serviços de palavras")
+@SecurityRequirement(name = "bearer-key")
 public class WordController {
 
     @Autowired

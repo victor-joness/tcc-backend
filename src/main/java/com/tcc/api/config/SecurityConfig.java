@@ -37,6 +37,14 @@ public class SecurityConfig {
             "/users/validation-email-delete-user",
             "/users/me",
             "/users",
+            "/categories",
+            "/interpreters",
+            "/laws",
+            "/liked-words",
+            "/news",
+            "/variations",
+            "/view-words",
+            "/words"
     };
 
     public static final String [] ENDPOINTS_CUSTOMER = {

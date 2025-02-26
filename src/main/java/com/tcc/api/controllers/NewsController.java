@@ -4,6 +4,7 @@ import com.tcc.api.dto.SaveNewsDTO;
 import com.tcc.api.models.News;
 import com.tcc.api.repositories.NewsRepo;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/news")
 @Tag(name = "Noticias", description = "Serviços de noticias")
+@SecurityRequirement(name = "bearer-key")
 public class NewsController {
 
     @Autowired

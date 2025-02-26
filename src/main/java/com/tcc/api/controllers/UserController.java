@@ -3,6 +3,7 @@ package com.tcc.api.controllers;
 import com.tcc.api.models.User;
 import com.tcc.api.repositories.UserRepo;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @Tag(name = "Usuários", description = "Serviços de usuários")
+@SecurityRequirement(name = "bearer-key")
 public class UserController {
 
     @Autowired

@@ -4,6 +4,7 @@ import com.tcc.api.dto.SaveInterpreterDTO;
 import com.tcc.api.models.Interpreter;
 import com.tcc.api.repositories.InterpreterRepo;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/interpreters")
 @Tag(name = "Interpretes", description = "Serviços de interpretes")
+@SecurityRequirement(name = "bearer-key")
 public class InterpreterController {
 
     @Autowired
