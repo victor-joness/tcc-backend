@@ -46,7 +46,7 @@ public class WordController {
     }
 
     @Operation(description = "Serviço para buscar detalhes de palavras pela categoria")
-    @GetMapping("/{categoryId}")
+    @GetMapping("/category/{categoryId}")
     public List<Word> getWordsByCategory(@PathVariable Long categoryId) {
         return wordRepository.findByCategoryId(categoryId);
     }
