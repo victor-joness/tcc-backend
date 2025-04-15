@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface WordRepo extends JpaRepository<com.tcc.api.models.Word, Long> {
-    List<Word> findByCategoryId(Long categoryId);
+    List<Word> findByCategoryIdAndStatus(Long categoryId, String status);
+    List<Word> findByStatus(String status);
 }
 
