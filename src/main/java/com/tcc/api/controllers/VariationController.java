@@ -12,8 +12,11 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/variations")
@@ -31,7 +34,7 @@ public class VariationController {
     @PostMapping
     public Variation createVariation(@RequestBody SaveVariationDTO data) throws BadRequestException {
         Optional<Word> word = wordRepo.findById(data.getWordId());
-        if (word.isPresent()){
+        if (word.isPresent()) {
             Variation variation = Variation.builder()
                     .name(data.getName())
                     .video(data.getVideo())
@@ -50,16 +53,17 @@ public class VariationController {
     }
 
     @Operation(description = "Serviço para buscar detalhes de variaçõe")
-    @GetMapping("/{id}")
+    @GetMapping("/variation/{id}")
     public Variation getVariationById(@PathVariable Long id) {
         return variationRepository.findById(id).orElseThrow(() -> new RuntimeException("Variation not found"));
     }
 
     @Operation(description = "Serviço para editar variaçõe")
     @PutMapping("/{id}")
-    public Variation updateVariation(@PathVariable Long id, @RequestBody SaveVariationDTO data) throws BadRequestException {
+    public Variation updateVariation(@PathVariable Long id, @RequestBody SaveVariationDTO data)
+            throws BadRequestException {
         Optional<Word> word = wordRepo.findById(data.getWordId());
-        if (word.isPresent()){
+        if (word.isPresent()) {
             Variation variation = Variation.builder()
                     .name(data.getName())
                     .video(data.getVideo())
@@ -74,8 +78,23 @@ public class VariationController {
     @Operation(description = "Serviço para apagar variaçõe")
     @DeleteMapping("/{id}")
     public void deleteVariation(@PathVariable Long id) {
-        Variation variation = variationRepository.findById(id).orElseThrow(() -> new RuntimeException("Variation not found"));
+        Variation variation = variationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Variation not found"));
         variationRepository.delete(variation);
     }
-}
 
+    @Operation(description = "Retorna variações linguísticas da palavra informada")
+    @GetMapping("/{wordId}")
+    public List<Map<String, Object>> getVariacoesByWordId(@PathVariable Long wordId) {
+        List<Variation> variations = variationRepository.findByWordId(wordId);
+
+        return variations.stream().map(variation -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", variation.getId());
+            map.put("name", variation.getName());
+            map.put("description", variation.getDescription());
+            map.put("video", variation.getVideo());
+            return map;
+        }).collect(Collectors.toList());
+    }
+}

@@ -11,11 +11,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/view-words")
@@ -30,38 +36,58 @@ public class ViewWordController {
     private UserRepo userRepo;
 
     @Autowired
-    private WordRepo wordRepo;
+    private WordRepo wordRepository;
 
-
-    @Operation(description = "Serviço para listar palavras vistas de um usuário", security = { @SecurityRequirement(name = "Authorization") })
+    @Operation(description = "Retorna apenas as palavras visualizadas recentemente por um usuário")
     @GetMapping("/{userId}")
-    public List<ViewWord> getByUserViewWords(@PathVariable Long userId) {
-        return viewWordRepository.findByUserIdOrderByDateAsc(userId);
-    }
+    public List<Word> getRecentViewedWords(@PathVariable Long userId) {
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Long> viewedWordIds = viewWordRepository.findViewedWordIdsByUserId(userId, pageable);
 
+        if (viewedWordIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // Buscar as palavras pelo id
+        List<Word> words = wordRepository.findByIdIn(viewedWordIds);
+
+        // Opcional: ordenar para ficar na ordem das visualizações mais recentes
+        // Como findByIdIn pode não preservar a ordem, ordenamos aqui:
+        Map<Long, Word> wordMap = words.stream().collect(Collectors.toMap(Word::getId, w -> w));
+        List<Word> sortedWords = viewedWordIds.stream()
+                .map(wordMap::get)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        return sortedWords;
+    }
 
     @Operation(description = "Serviço para salvar palavra vista por um usuário")
     @PostMapping
-    public ViewWord saveView(@RequestBody ViewWordDTO data) throws BadRequestException {
+    public Word saveView(@RequestBody ViewWordDTO data) throws BadRequestException {
         Optional<User> user = userRepo.findById(data.getUserId());
-        Optional<Word> word = wordRepo.findById(data.getUserId());
+        Optional<Word> word = wordRepository.findById(data.getWordId());
+
         if (user.isPresent() && word.isPresent()) {
-            Optional<ViewWord> viewWordOptional = viewWordRepository.findByUserIdAndWordId(data.getUserId(), data.getWordId());
+            Optional<ViewWord> viewWordOptional = viewWordRepository.findByUserIdAndWordId(data.getUserId(),
+                    data.getWordId());
+
             if (viewWordOptional.isPresent()) {
                 ViewWord viewWord = viewWordOptional.get();
                 viewWord.setDate(data.getDate());
-                return viewWordRepository.save(viewWord);
+                viewWordRepository.save(viewWord);
+            } else {
+                ViewWord viewWord = new ViewWord();
+                viewWord.setUser(user.get());
+                viewWord.setWord(word.get());
+                viewWord.setDate(data.getDate());
+                viewWordRepository.save(viewWord);
             }
-            ViewWord viewWordDetails = new ViewWord();
-            viewWordDetails.setUser(user.get());
-            viewWordDetails.setWord(word.get());
-            viewWordDetails.setDate(data.getDate());
-            return viewWordRepository.save(viewWordDetails);
+
+            return word.get(); // Retorna apenas a palavra
         }
+
         throw new BadRequestException("Palavra ou usuário não existe");
-
-
     }
 
 }
-

@@ -10,4 +10,5 @@ import lombok.Setter;
 public class SaveLikedWord {
     private Long userId;
     private Long wordId;
+    private String status;
 }

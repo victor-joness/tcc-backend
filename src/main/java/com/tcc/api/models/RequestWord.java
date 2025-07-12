@@ -1,26 +1,29 @@
 package com.tcc.api.models;
+
 import jakarta.persistence.*;
 import lombok.*;
 
-@Setter
-@Getter
+@Entity
+@Table(name = "request_words")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "liked_words")
-@Entity
-public class LikedWord {
+public class RequestWord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private User user;
+    private String word;
 
-    @ManyToOne
-    private Word word;
+    private String videoUrl;
 
-    @Column(nullable = false)
+    private String category;
+
+    private Long requestUserId;
+
     private String status;
+
+    private Long interpreterId;
 }

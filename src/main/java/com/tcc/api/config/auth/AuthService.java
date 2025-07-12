@@ -87,7 +87,7 @@ public class AuthService {
         user.setCode(code);
         user.setPassword(passwordEncoder.encode(data.getPassword()));
         User userCreated = userRepository.save(user);
-        sendMailSignUpUseCase.sendSimpleMessage(userCreated.getEmail(), subjectSignUpEmail, messageSignUpEmail);
+        sendMailSignUpUseCase.sendSimpleMessage(userCreated.getEmail(), subjectSignUpEmail, (messageSignUpEmail+" : "+ code));
         return modelMapper.map(userCreated, CreatedUserDTO.class);
 
     }
