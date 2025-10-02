@@ -1,5 +1,7 @@
 package com.tcc.api.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +24,6 @@ public class Variation {
     private String video;
 
     @ManyToOne
+    @JsonBackReference
     private Word word;
-
 }

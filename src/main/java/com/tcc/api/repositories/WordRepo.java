@@ -8,5 +8,6 @@ import java.util.List;
 public interface WordRepo extends JpaRepository<com.tcc.api.models.Word, Long> {
     List<Word> findByCategoryIdAndStatus(Long categoryId, String status);
     List<Word> findByStatus(String status);
+    List<Word> findByIdIn(List<Long> viewedWordIds);
 }
 

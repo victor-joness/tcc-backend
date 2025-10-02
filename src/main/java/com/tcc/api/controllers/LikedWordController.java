@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/liked-words")
@@ -37,31 +38,57 @@ public class LikedWordController {
     @Operation(description = "Serviço para salvar curtida")
     @PostMapping
     public LikedWord createLikedWord(@RequestBody SaveLikedWord data) throws BadRequestException {
-        Optional<User> user = userRepo.findById(data.getUserId());
-        Optional<Word> word = wordRepo.findById(data.getUserId());
+        Optional<User> userOpt = userRepo.findById(data.getUserId());
+        Optional<Word> wordOpt = wordRepo.findById(data.getWordId());
 
-        if (user.isPresent() && word.isPresent()) {
+        if (userOpt.isEmpty() || wordOpt.isEmpty()) {
+            throw new BadRequestException("Palavra ou usuário não existe");
+        }
+
+        User user = userOpt.get();
+        Word word = wordOpt.get();
+
+        // Verifica se já existe curtida para aquele usuário e palavra
+        Optional<LikedWord> likedWordOpt = likedWordRepository.findByUserAndWord(user, word);
+
+        if (likedWordOpt.isPresent()) {
+            LikedWord likedWord = likedWordOpt.get();
+
+            // Alterna status SAVED <-> REMOVED
+            if ("SAVED".equalsIgnoreCase(likedWord.getStatus())) {
+                likedWord.setStatus("REMOVED");
+            } else {
+                likedWord.setStatus("SAVED");
+            }
+
+            return likedWordRepository.save(likedWord);
+        } else {
             LikedWord likedWord = new LikedWord();
-            likedWord.setWord(word.get());
-            likedWord.setUser(user.get());
+            likedWord.setUser(user);
+            likedWord.setWord(word);
+            likedWord.setStatus("SAVED");
+
             return likedWordRepository.save(likedWord);
         }
-        throw new BadRequestException("Palavra ou usuário não existe");
-
     }
 
-
-
-    @Operation(description = "Serviço para buscar detalhes de curtidas do usuário")
+    @Operation(description = "Serviço para buscar palavras curtidas do usuário")
     @GetMapping("/user/{userId}")
-    public List<LikedWord> getLikedWordsByUser(@PathVariable Long userId) {
-        return likedWordRepository.findByUserId(userId);
+    public List<Word> getLikedWordsByUser(@PathVariable Long userId) {
+        List<LikedWord> likedWords = likedWordRepository.findByUserId(userId);
+
+        // Filtra apenas os likes com status "SAVED"
+        return likedWords.stream()
+                .filter(lw -> "SAVED".equalsIgnoreCase(lw.getStatus()))
+                .map(LikedWord::getWord)
+                .collect(Collectors.toList());
     }
 
     @Operation(description = "Serviço para descurtir palavra")
     @DeleteMapping("/{id}")
     public void deleteLikedWord(@PathVariable Long id) {
-        LikedWord likedWord = likedWordRepository.findById(id).orElseThrow(() -> new RuntimeException("Liked word not found"));
+        LikedWord likedWord = likedWordRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Liked word not found"));
         likedWordRepository.delete(likedWord);
     }
 
@@ -80,4 +107,3 @@ public class LikedWordController {
         return mostLikedWords;
     }
 }
-

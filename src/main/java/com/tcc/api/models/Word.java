@@ -1,5 +1,9 @@
 package com.tcc.api.models;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +26,13 @@ public class Word {
     private String status;
     private String modulo;
 
+    @Column(name = "request_word_id")
+    private Long request_word_id;
+
     @ManyToOne
     private Category category;
+
+    @OneToMany(mappedBy = "word", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Variation> variations;
 }
