@@ -59,9 +59,6 @@ public class ViewWordController {
             return viewWordRepository.save(viewWordDetails);
         }
         throw new BadRequestException("Palavra ou usuário não existe");
-
-
     }
-
 }
 
